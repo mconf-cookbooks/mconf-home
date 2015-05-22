@@ -12,3 +12,4 @@ default['mconf']['app_group'] = 'www-data'
 default['mconf-home']['domain'] = '192.168.0.100'
 default['mconf-home']['deploy_to'] = '/var/www/mconf-home'
 default['mconf-home']['deploy_to_full'] = '/var/www/mconf-home/current'
+default['mconf-home']['remove_www'] = true

@@ -30,12 +30,32 @@ end
 
 
 apache_module 'rewrite'
-# apache_module 'xsendfile'
 
 %w{default default-ssl 000-default}.each do |site|
   apache_site site do
     enable false
   end
+end
+
+rewrites = []
+items = data_bag('apache2_rewrites')
+items.each do |item|
+  rewrites << data_bag_item('apache2_rewrites', item)
+end
+
+# Apache website configuration
+# Note: can't use web_app because it doesn't take variables
+template "#{node['apache']['dir']}/sites-available/mconf-home.conf" do
+  source "apache-site.conf.erb"
+  mode 00644
+  owner 'root'
+  group 'root'
+  variables rewrites: rewrites
+  notifies :restart, "service[apache2]", :delayed
+end
+apache_site 'mconf-home' do
+  action :enable
+  notifies :restart, "service[apache2]", :delayed
 end
 
 # To validate our Apache configurations

@@ -1,0 +1,66 @@
+Listen 0.0.0.0:80
+
+ServerName <%= node['mconf-home']['domain'] %>
+
+<VirtualHost *:80>
+  ServerName <%= node['mconf-home']['domain'] %>
+  ServerSignature Off
+
+  DocumentRoot <%= node['mconf-home']['deploy_to_full'] %>/public
+  <Directory <%= node['mconf-home']['deploy_to_full'] %>/public>
+    AllowOverride all
+    Options -MultiViews
+    Require all granted
+  </Directory>
+
+  RewriteEngine On
+
+  # Shows the maintenance page if it exists
+  ErrorDocument 503 /system/maintenance.html
+  RewriteCond   %{REQUEST_URI} !\.(css|gif|jpg|png)$
+  RewriteCond   %{DOCUMENT_ROOT}/system/maintenance.html -f
+  RewriteCond   %{SCRIPT_FILENAME} !maintenance.html
+  RewriteRule   ^.*$  -  [redirect=503,last]
+
+  # Rewrite to https unless we're on mconf-home
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{REQUEST_URI} !^/about(/.*)?$
+  RewriteCond %{REQUEST_URI} !^/blog(/.*)?$
+  RewriteCond %{REQUEST_URI} !^/posts(/.*)?$
+  RewriteCond %{REQUEST_URI} !^/demo(/.*)?$
+  RewriteCond %{REQUEST_URI} !^/feed(/.*)?$
+  RewriteCond %{REQUEST_URI} !^/docs(/.*)?$
+  RewriteCond %{REQUEST_URI} !^/comments(/.*)?$
+  RewriteCond %{REQUEST_URI} !^/wp-.*(/.*)?$
+  RewriteCond %{REQUEST_URI} !^.*.php$
+  RewriteCond %{REQUEST_URI} !^/$
+  RewriteRule ^(.*) https://%{HTTP_HOST}$1 [R,L]
+
+<% if node['mconf-home']['remove_www'] %>
+  # Remove www: www.any.org -> any.org
+  RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+  RewriteRule ^(.*)$ http://%1/$1 [R=301,L]
+<% end %>
+
+<% @rewrites.each do |rewrite| %>
+  <% if rewrite['comment'] %>
+  <%= "# #{rewrite['comment']}" %>
+  <% end %>
+  <% if rewrite['conds'] %>
+    <% rewrite['conds'].each do |cond| %>
+  RewriteCond <%= cond %>
+    <% end %>
+  <% end %>
+  <% if rewrite['rules'] %>
+    <% rewrite['rules'].each do |rule| %>
+  RewriteRule <%= rule %>
+    <% end %>
+  <% end %>
+
+<% end %>
+
+  # debug, info, notice, warn, error, crit, alert, emerg
+  LogLevel info
+  ErrorLog /var/log/apache2/mconf-home-error.log
+  CustomLog /var/log/apache2/mconf-home-access.log combined
+</VirtualHost>
