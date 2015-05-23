@@ -6,8 +6,8 @@ ServerName <%= node['mconf-home']['domain'] %>
   ServerName <%= node['mconf-home']['domain'] %>
   ServerSignature Off
 
-  DocumentRoot <%= node['mconf-home']['deploy_to_full'] %>/public
-  <Directory <%= node['mconf-home']['deploy_to_full'] %>/public>
+  DocumentRoot <%= node['mconf-home']['deploy_to_full'] %>
+  <Directory <%= node['mconf-home']['deploy_to_full'] %>>
     AllowOverride all
     Options -MultiViews
     Require all granted
