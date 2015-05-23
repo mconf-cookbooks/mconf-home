@@ -17,10 +17,9 @@ include_recipe "php::module_mysql"
 include_recipe "apache2"
 include_recipe "apache2::mod_php5"
 
-
 # Create the app directory
 # (Just the directory, capistrano does the rest)
-directory node['mconf-home']['deploy_to_full'] do
+directory node['mconf-home']['deploy_to'] do
   owner node['mconf']['user']
   group node['mconf']['app_group']
   mode '0755'
