@@ -20,8 +20,8 @@ include_recipe "apache2::mod_php5"
 # Create the app directory
 # (Just the directory, capistrano does the rest)
 directory node['mconf-home']['deploy_to'] do
-  owner node['mconf']['user']
-  group node['mconf']['app_group']
+  owner node['mconf-home']['user']
+  group node['mconf-home']['app_group']
   mode '0755'
   recursive true
   action :create
