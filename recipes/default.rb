@@ -37,9 +37,11 @@ apache_module 'rewrite'
 end
 
 rewrites = []
-items = data_bag('apache2_rewrites')
-items.each do |item|
-  rewrites << data_bag_item('apache2_rewrites', item)
+if Chef::DataBag.list.key?('apache2_rewrites')
+  items = data_bag('apache2_rewrites')
+  items.each do |item|
+    rewrites << data_bag_item('apache2_rewrites', item)
+  end
 end
 
 # Apache website configuration
