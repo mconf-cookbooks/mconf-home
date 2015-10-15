@@ -16,6 +16,7 @@ version          "0.0.1"
 depends          "php"
 depends          "build-essential"
 depends          "apache2"
+depends          "wp-cli", "~> 0.1"
 supports         "ubuntu"
 
 recipe "mconf-home::default", "Sets up an instance of Mconf-Home"

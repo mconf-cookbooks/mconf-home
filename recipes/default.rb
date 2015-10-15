@@ -63,3 +63,5 @@ end
 execute 'validate apache' do
   command 'apache2ctl configtest'
 end
+
+include_recipe "wp-cli"
