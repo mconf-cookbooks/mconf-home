@@ -14,7 +14,7 @@ description      "Sets up an instance of Mconf-Home"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "0.0.2"
 depends          "php", "1.1.8"
-depends          "build-essential", "~> 2.0"
+depends          "build-essential", ">= 2.0"
 depends          "apache2", "3.0.1"
 depends          "wp-cli", "~> 0.1"
 supports         "ubuntu"
